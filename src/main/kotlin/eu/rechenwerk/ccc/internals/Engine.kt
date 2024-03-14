@@ -68,13 +68,6 @@ fun run(level: Int) {
         println("------------------------------------------------------------------------")
         println("The Example has been solved correctly")
         println("------------------------------------------------------------------------")
-        val thisLevelDirectory = levelDirectory.resolve("level$level").toPath()
-        Files.createDirectories(thisLevelDirectory)
-        results.forEach{
-            val file = thisLevelDirectory.resolve(it.key.replace("in", "out"))
-            Files.deleteIfExists(file)
-            Files.writeString(file, it.value.toString(), StandardOpenOption.CREATE)
-        }
     } else {
         println("------------------------------------------------------------------------")
         println("The Example has not been solved correctly, here are the outputs of both:")
@@ -85,7 +78,13 @@ fun run(level: Int) {
         println(exampleResult)
         println("-------------------------------------------------------------------------")
     }
-
+    val thisLevelDirectory = levelDirectory.resolve("level$level").toPath()
+    Files.createDirectories(thisLevelDirectory)
+    results.forEach{
+        val file = thisLevelDirectory.resolve(it.key.replace("in", "out"))
+        Files.deleteIfExists(file)
+        Files.writeString(file, it.value.toString(), StandardOpenOption.CREATE)
+    }
 }
 
 private fun getZips(): List<File> {
@@ -237,6 +236,22 @@ private fun formparMap(formpar: Field, scanner: Scanner, fields: MutableMap<Stri
                 value
             }
         }
+        "class eu.rechenwerk.ccc.internals.Line" -> {
+            scanner.nextLine()
+            if(repeat) {
+                val list = mutableListOf<String>()
+                for (i in 0 until length) {
+                    list += scanner.nextLine()
+                }
+                val value = list.toList()
+                fields[name] = value
+                value
+            } else {
+                val value = scanner.nextLine()
+                fields[name] = value
+                value
+            }
+        }
         else -> {
             if(repeat) {
                 val list = mutableListOf<Any>()
@@ -263,3 +278,5 @@ private fun getScannersFromZip(zip: File): Map<String, Scanner> {
         it.name to Scanner(zipFile.getInputStream(it))
     }.toMap()
 }
+
+class Line
