@@ -16,6 +16,8 @@ import kotlin.reflect.KClass
 val levelDirectory = File(System.getProperty("user.home")).resolve("ccc")
 const val pkg = "eu.rechenwerk.ccc"
 
+fun run() = run(highestLevel() ?: throw IllegalStateException("No method annotated with @Level(Int)."))
+
 fun run(level: Int) {
     val method = method(level)
     val problems = scanners(level).filterKeys { name -> name.endsWith(".in") }
@@ -41,6 +43,12 @@ private fun method(level: Int): Method {
         throw WrongReturnValueException(level, method)
     }
     return method
+}
+
+private fun highestLevel(): Int? {
+    return Reflections(pkg, Scanners.MethodsAnnotated)
+        .getMethodsAnnotatedWith(Level::class.java)
+        .maxOfOrNull { it.getAnnotation(Level::class.java).value }
 }
 
 private fun Scanner.apply(method: Method): String {
@@ -82,7 +90,7 @@ private fun Scanner.scan(type: KClass<*>): Any {
 }
 
 private fun Scanner.scanMany(parameter: Parameter, actPars: Map<String, Any>): Any {
-    val anno = parameter.getAnnotation(Many::class.java) ?: throw NoListOfAnnotationException(parameter)
+    val anno = parameter.getAnnotation(Many::class.java) ?: throw NoManyAnnotationException(parameter)
     val nTimes = actPars[anno.sizeParamName] as Int
     val list: MutableList<Any> = mutableListOf()
 
@@ -103,8 +111,10 @@ private fun getExampleOutput(level: Int): String {
         .first()
 
     val sb = StringBuilder()
-    while (outputScanner.hasNextLine())
+    if (outputScanner.hasNextLine())
         sb.append(outputScanner.nextLine())
+    while (outputScanner.hasNextLine())
+        sb.append("\n").append(outputScanner.nextLine())
 
     return sb.toString()
 }
@@ -118,7 +128,7 @@ private fun testExample(level: Int, results: Map<String, String>) {
     val line = "------------------------------------------------------------------------"
     if(exampleResult == exampleSolution) {
         println(line)
-        println("The Example has been solved correctly")
+        println("The Example for level $level has been solved correctly. Writing all files.")
         println(line)
         val thisLevelDirectory = levelDirectory.resolve("level$level").toPath()
         Files.createDirectories(thisLevelDirectory)
@@ -131,7 +141,7 @@ private fun testExample(level: Int, results: Map<String, String>) {
             }
     } else {
         println(line)
-        println("The Example has not been solved correctly, here are the outputs of both:")
+        println("The Example has not been solved correctly, no files overwritten. Here are the outputs of both versions:")
         println("Example: ")
         println(exampleSolution)
         println(line)
