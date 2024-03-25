@@ -1,6 +1,3 @@
 package eu.rechenwerk.ccc
 
-import eu.rechenwerk.ccc.internals.*
-
-
-fun main() = run()
+fun main() = eu.rechenwerk.ccc.internals.run()

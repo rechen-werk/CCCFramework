@@ -1,5 +1,10 @@
 package eu.rechenwerk.ccc.internals
 
+import eu.rechenwerk.ccc.internals.annotations.Level
+import eu.rechenwerk.ccc.internals.annotations.Many
+import eu.rechenwerk.ccc.internals.exceptions.WrongReturnValueException
+import eu.rechenwerk.ccc.internals.exceptions.NoZipException
+import eu.rechenwerk.ccc.internals.exceptions.NoManyAnnotationException
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import java.io.File
@@ -13,8 +18,8 @@ import java.util.zip.ZipFile
 import kotlin.collections.HashMap
 import kotlin.reflect.KClass
 
-val levelDirectory = File(System.getProperty("user.home")).resolve("ccc")
-const val pkg = "eu.rechenwerk.ccc"
+private val levelDirectory = File(System.getProperty("user.home")).resolve("ccc")
+private const val pkg = "eu.rechenwerk.ccc"
 
 fun run() = run(highestLevel() ?: throw IllegalStateException("No method annotated with @Level(Int)."))
 
@@ -125,7 +130,7 @@ private fun testExample(level: Int, results: Map<String, String>) {
         .map { it.value }.only("Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name.")
 
     val exampleSolution = getExampleOutput(level)
-    val line = "------------------------------------------------------------------------"
+    val line = 103 * "-"
     if(exampleResult == exampleSolution) {
         println(line)
         println("The Example for level $level has been solved correctly. Writing all files.")

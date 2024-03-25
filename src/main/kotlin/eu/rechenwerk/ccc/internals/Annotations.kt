@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc.internals
+package eu.rechenwerk.ccc.internals.annotations
 
 import kotlin.reflect.KClass
 

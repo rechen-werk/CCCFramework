@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc.internals
+package eu.rechenwerk.ccc.internals.exceptions
 
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
