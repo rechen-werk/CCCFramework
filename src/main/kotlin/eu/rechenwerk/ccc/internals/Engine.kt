@@ -30,7 +30,7 @@ fun run(level: Int) {
     testExample(level, results)
 }
 
-private fun getZip(level: Int) = levelDirectory.listFiles()!!.first { it.name == "level$level.zip" } ?: throw NoZipException(level)
+private fun getZip(level: Int) = levelDirectory.listFiles()?.first { it.name == "level$level.zip" } ?: throw NoZipException(level)
 
 private fun scanners(level: Int): Map<String, Scanner> {
     val zipFile = ZipFile(getZip(level))
