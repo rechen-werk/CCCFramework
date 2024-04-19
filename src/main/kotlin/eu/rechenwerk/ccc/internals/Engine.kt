@@ -21,16 +21,20 @@ import kotlin.reflect.KClass
 private val levelDirectory = File(System.getProperty("user.home")).resolve("ccc")
 private const val pkg = "eu.rechenwerk.ccc"
 
-fun run() = run(highestLevel() ?: throw IllegalStateException("No method annotated with @Level(Int)."))
+fun run() = highestLevel()?.let { run(it) } ?: System.err.println("No method annotated with @Level(Int).")
 
 fun run(level: Int) {
-    val method = method(level)
-    val problems = scanners(level).filterKeys { name -> name.endsWith(".in") }
-    val results = problems.mapValues { (_, scanner) -> scanner.apply(method) }
-    testExample(level, results)
+    try {
+        val method = method(level)
+        val problems = scanners(level).filterKeys { name -> name.endsWith(".in") }
+        val results = problems.mapValues { (_, scanner) -> scanner.apply(method) }
+        testExample(level, results)
+    } catch (e: Exception) {
+        System.err.println(e.message ?: throw e)
+    }
 }
 
-private fun getZip(level: Int) = levelDirectory.listFiles()?.first { it.name == "level$level.zip" } ?: throw NoZipException(level)
+private fun getZip(level: Int) = levelDirectory.listFiles()?.firstOrNull { it.name == "level$level.zip" } ?: throw NoZipException(level)
 
 private fun scanners(level: Int): Map<String, Scanner> {
     val zipFile = ZipFile(getZip(level))

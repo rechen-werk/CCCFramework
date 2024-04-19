@@ -3,7 +3,7 @@ package eu.rechenwerk.ccc.internals.exceptions
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 
-class NoZipException(level: Int) : Exception("Could not find a zip for level $level")
+class NoZipException(level: Int) : Exception("Could not find a zip for level $level.")
 
 class SingleException(msg: String): Exception(msg)
 
