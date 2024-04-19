@@ -8,6 +8,6 @@ class NoZipException(level: Int) : EngineException("Could not find a zip for lev
 
 class SingleException(msg: String): EngineException(msg)
 
-class WrongReturnValueException(level: Int, method: Method): EngineException("Expected method with String as return type for @Level($level) ${method.name}, but it has ${method.returnType.simpleName}.")
+class WrongReturnValueException(level: Int, method: Method): EngineException("Expected method with CharSequence as return type for @Level($level) ${method.name}, but it has ${method.returnType.simpleName}.")
 
 class NoManyAnnotationException(parameter: Parameter): EngineException("Expected parameter ${parameter.name} to have Many Annotation, because it is a List.")

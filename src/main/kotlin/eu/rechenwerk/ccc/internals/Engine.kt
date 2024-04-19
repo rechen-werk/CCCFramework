@@ -49,7 +49,7 @@ private fun method(level: Int): Method {
         .getMethodsAnnotatedWith(Level(level))
         .only("Expected exactly one method with @Level($level).")
 
-    if(method.returnType != CharSequence::class.java) {
+    if (method.returnType != CharSequence::class.java && method.returnType != String::class.java && method.returnType != Line::class.java) {
         throw WrongReturnValueException(level, method)
     }
     return method
@@ -134,9 +134,9 @@ private fun getExampleOutput(level: Int): CharSequence {
 private fun testExample(level: Int, results: Map<String, CharSequence>) {
     val exampleResult = results
         .filterKeys { it.contains("example") }
-        .map { it.value }.only("Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name.")
+        .map { it.value }.only("Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name.").toString()
 
-    val exampleSolution = getExampleOutput(level)
+    val exampleSolution = getExampleOutput(level).toString()
     val line = 103 * "-"
     if(exampleResult == exampleSolution) {
         println(line)
