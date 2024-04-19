@@ -2,6 +2,7 @@ package eu.rechenwerk.ccc.internals
 
 import eu.rechenwerk.ccc.internals.annotations.Level
 import eu.rechenwerk.ccc.internals.annotations.Many
+import eu.rechenwerk.ccc.internals.exceptions.EngineException
 import eu.rechenwerk.ccc.internals.exceptions.WrongReturnValueException
 import eu.rechenwerk.ccc.internals.exceptions.NoZipException
 import eu.rechenwerk.ccc.internals.exceptions.NoManyAnnotationException
@@ -29,7 +30,7 @@ fun run(level: Int) {
         val problems = scanners(level).filterKeys { name -> name.endsWith(".in") }
         val results = problems.mapValues { (_, scanner) -> scanner.apply(method) }
         testExample(level, results)
-    } catch (e: Exception) {
+    } catch (e: EngineException) {
         System.err.println(e.message ?: throw e)
     }
 }
@@ -48,7 +49,7 @@ private fun method(level: Int): Method {
         .getMethodsAnnotatedWith(Level(level))
         .only("Expected exactly one method with @Level($level).")
 
-    if(method.returnType != String::class.java) {
+    if(method.returnType != CharSequence::class.java) {
         throw WrongReturnValueException(level, method)
     }
     return method
@@ -60,12 +61,12 @@ private fun highestLevel(): Int? {
         .maxOfOrNull { it.getAnnotation(Level::class.java).value }
 }
 
-private fun Scanner.apply(method: Method): String {
+private fun Scanner.apply(method: Method): CharSequence {
     val formPars = method.parameters
     val actPars = HashMap<String, Any>()
     actPars.fill(this, formPars)
     // I am not using actPars.values, because maps do not have to preserve ordering
-    return method.invoke(null, *formPars.map { actPars[it.name] }.toTypedArray()) as String
+    return method.invoke(null, *formPars.map { actPars[it.name] }.toTypedArray()) as CharSequence
 }
 
 private fun HashMap<String, Any>.fill(scanner: Scanner, parameters: Array<Parameter>) {
@@ -78,15 +79,16 @@ private fun HashMap<String, Any>.fill(scanner: Scanner, parameters: Array<Parame
 }
 
 private fun Scanner.scan(type: KClass<*>): Any {
-    return when(type) {
-        Byte::class -> this.nextByte()
-        Short::class -> this.nextShort()
-        Int::class -> this.nextInt()
-        Long::class -> this.nextLong()
-        Float::class -> this.nextFloat()
-        Double::class -> this.nextDouble()
-        Char::class -> this.next()[0]
-        String::class -> this.next()
+    val next = when(type) {
+        Byte::class -> nextByte()
+        Short::class -> nextShort()
+        Int::class -> nextInt()
+        Long::class -> nextLong()
+        Float::class -> nextFloat()
+        Double::class -> nextDouble()
+        Char::class -> next()[0]
+        Line::class -> Line(nextLine().ifBlank { nextLine() })
+        String::class -> next()
         else -> {
             val constructor = type.java.constructors[0]
             val formPars = constructor?.parameters ?: arrayOf()
@@ -96,6 +98,7 @@ private fun Scanner.scan(type: KClass<*>): Any {
             constructor.newInstance(*formPars.map { actPars[it.name] }.toTypedArray())
         }
     }
+    return next
 }
 
 private fun Scanner.scanMany(parameter: Parameter, actPars: Map<String, Any>): Any {
@@ -112,7 +115,7 @@ private fun Scanner.scanMany(parameter: Parameter, actPars: Map<String, Any>): A
     }
 }
 
-private fun getExampleOutput(level: Int): String {
+private fun getExampleOutput(level: Int): CharSequence {
     val scanners = scanners(level)
     val outputScanner = scanners
         .filter { it.key.endsWith(".out") }
@@ -128,7 +131,7 @@ private fun getExampleOutput(level: Int): String {
     return sb.toString()
 }
 
-private fun testExample(level: Int, results: Map<String, String>) {
+private fun testExample(level: Int, results: Map<String, CharSequence>) {
     val exampleResult = results
         .filterKeys { it.contains("example") }
         .map { it.value }.only("Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name.")
