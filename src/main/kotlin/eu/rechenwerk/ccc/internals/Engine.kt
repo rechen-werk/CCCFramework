@@ -30,13 +30,16 @@ fun run(level: Int) {
         val method = method(level)
         val problems = scanners(level).filterKeys { name -> name.endsWith(".in") }
 
-        if(method.isAnnotationPresent(Example::class.java)) {
-            val example = method.getAnnotation(Example::class.java).value
-            val scanner = problems
-                .filterKeys { filename -> filename == "level${level}_${if (example == 0) "example" else example}.in" }
-                .map { it.value }
-                .only { "Invalid value for @Example($example). Files for this level are \"${problems.map { it.key }.joinToString("\", \"")}\". Note: level${level}_example.in is default or value 0." }
-            print(scanner.apply(method))
+        if(method.getAnnotationsByType(Example::class.java).isNotEmpty()) {
+            val examples = method.getAnnotationsByType(Example::class.java).map { it.value }.sorted()
+            examples.forEach { example ->
+                val scanner = problems
+                    .filterKeys { filename -> filename == "level${level}_${if (example == 0) "example" else example}.in" }
+                    .map { it.value }
+                    .only { "Invalid value for @Example($example). Files for this level are \"${problems.map { it.key }.joinToString("\", \"")}\". Note: level${level}_example.in is default or value 0." }
+                println("Example $example:")
+                println(scanner.apply(method))
+            }
         } else {
             val results = problems.mapValues { (_, scanner) -> scanner.apply(method) }
             testExample(level, results)
