@@ -1,5 +1,6 @@
 package eu.rechenwerk.ccc.internals
 
+import eu.rechenwerk.ccc.internals.annotations.Example
 import eu.rechenwerk.ccc.internals.annotations.Level
 import eu.rechenwerk.ccc.internals.annotations.Many
 import eu.rechenwerk.ccc.internals.exceptions.EngineException
@@ -28,8 +29,18 @@ fun run(level: Int) {
     try {
         val method = method(level)
         val problems = scanners(level).filterKeys { name -> name.endsWith(".in") }
-        val results = problems.mapValues { (_, scanner) -> scanner.apply(method) }
-        testExample(level, results)
+
+        if(method.isAnnotationPresent(Example::class.java)) {
+            val example = method.getAnnotation(Example::class.java).value
+            val scanner = problems
+                .filterKeys { filename -> filename == "level${level}_${if (example == 0) "example" else example}.in" }
+                .map { it.value }
+                .only { "Invalid value for @Example($example). Files for this level are \"${problems.map { it.key }.joinToString("\", \"")}\". Note: level${level}_example.in is default or value 0." }
+            print(scanner.apply(method))
+        } else {
+            val results = problems.mapValues { (_, scanner) -> scanner.apply(method) }
+            testExample(level, results)
+        }
     } catch (e: EngineException) {
         System.err.println(e.message ?: throw e)
     }
@@ -47,7 +58,7 @@ private fun scanners(level: Int): Map<String, Scanner> {
 private fun method(level: Int): Method {
     val method = Reflections(pkg, Scanners.MethodsAnnotated)
         .getMethodsAnnotatedWith(Level(level))
-        .only("Expected exactly one method with @Level($level).")
+        .only{ "Expected exactly one method with @Level($level)." }
 
     if (method.returnType != CharSequence::class.java && method.returnType != String::class.java && method.returnType != Line::class.java) {
         throw WrongReturnValueException(level, method)
@@ -61,12 +72,12 @@ private fun highestLevel(): Int? {
         .maxOfOrNull { it.getAnnotation(Level::class.java).value }
 }
 
-private fun Scanner.apply(method: Method): CharSequence {
+private fun Scanner.apply(method: Method): String {
     val formPars = method.parameters
     val actPars = HashMap<String, Any>()
     actPars.fill(this, formPars)
     // I am not using actPars.values, because maps do not have to preserve ordering
-    return method.invoke(null, *formPars.map { actPars[it.name] }.toTypedArray()) as CharSequence
+    return method.invoke(null, *formPars.map { actPars[it.name] }.toTypedArray()).toString()
 }
 
 private fun HashMap<String, Any>.fill(scanner: Scanner, parameters: Array<Parameter>) {
@@ -115,7 +126,7 @@ private fun Scanner.scanMany(parameter: Parameter, actPars: Map<String, Any>): A
     }
 }
 
-private fun getExampleOutput(level: Int): CharSequence {
+private fun getExampleOutput(level: Int): String {
     val scanners = scanners(level)
     val outputScanner = scanners
         .filter { it.key.endsWith(".out") }
@@ -131,12 +142,14 @@ private fun getExampleOutput(level: Int): CharSequence {
     return sb.toString()
 }
 
-private fun testExample(level: Int, results: Map<String, CharSequence>) {
+private fun testExample(level: Int, results: Map<String, String>) {
     val exampleResult = results
         .filterKeys { it.contains("example") }
-        .map { it.value }.only("Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name.").toString()
+        .map { it.value }
+        .only{ "Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name." }
+        .toString()
 
-    val exampleSolution = getExampleOutput(level).toString()
+    val exampleSolution = getExampleOutput(level)
     val line = 103 * "-"
     if(exampleResult == exampleSolution) {
         println(line)

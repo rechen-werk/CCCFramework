@@ -4,7 +4,7 @@ package eu.rechenwerk.ccc.internals
  * Class for annotations, this lets the scanner read an entire line.
  * If the next line would be empty, then the empty line is skipped.
  */
-class Line(private val value: String): CharSequence, Comparable<String> by value {
+class Line(val value: String): CharSequence, Comparable<String> by value {
     override val length: Int
         get() = value.length
 

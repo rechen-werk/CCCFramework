@@ -2,8 +2,8 @@ package eu.rechenwerk.ccc.internals
 
 import eu.rechenwerk.ccc.internals.exceptions.SingleException
 
-fun <T> Collection<T?>.only(exceptionMessage: String = "Expected only one of something."): T {
-    if(this.size != 1) throw SingleException(exceptionMessage)
+fun <T> Collection<T?>.only(exceptionMessage: () -> String): T {
+    if(this.size != 1) throw SingleException(exceptionMessage.invoke())
     return this.first()!!
 }
 
