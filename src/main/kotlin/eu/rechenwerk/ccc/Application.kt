@@ -1,5 +1,6 @@
 package eu.rechenwerk.ccc
 
-import eu.rechenwerk.ccc.internals.run
-
-fun main() = run()
+fun main() = CCCEngine()
+    .packageName("eu.rechenwerk")
+    .folderName("/home/rechenwerk/ccc")
+    .run()

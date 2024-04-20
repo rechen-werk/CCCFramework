@@ -15,9 +15,6 @@ dependencies {
     //engine
     implementation("org.reflections:reflections:0.10.2")
 
-    //tools
-    implementation("org.jgrapht:jgrapht-core:1.5.2")
-
     //stuff
     implementation("org.slf4j:slf4j-nop:2.0.9")
     implementation(kotlin("stdlib-jdk8"))

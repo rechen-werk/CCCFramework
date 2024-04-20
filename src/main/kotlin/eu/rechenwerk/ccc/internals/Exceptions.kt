@@ -1,17 +1,18 @@
-package eu.rechenwerk.ccc.internals.exceptions
+package eu.rechenwerk.ccc.internals
 
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
-open class EngineException(message: String) : Exception(message)
 
-class NoZipException(level: Int) : EngineException("Could not find a zip for level $level.")
+internal open class EngineException(message: String) : Exception(message)
 
-class SingleException(msg: String): EngineException(msg)
+internal class NoZipException(level: Int) : EngineException("Could not find a zip for level $level.")
 
-class NoCharSequenceReturned(level: Int, method: Method): EngineException("Expected method with CharSequence as return type for @Level($level) ${method.name}, but it has ${method.returnType.simpleName}.")
+internal class SingleException(msg: String): EngineException(msg)
 
-class NoBooleanReturned(level: Int, method: Method): EngineException("Expected method with Boolean as return type for @Validator($level) ${method.name}, but it has ${method.returnType.simpleName}.")
+internal class NoCharSequenceReturned(level: Int, method: Method): EngineException("Expected method with CharSequence as return type for @Level($level) ${method.name}, but it has ${method.returnType.simpleName}.")
 
-class NoManyAnnotationException(parameter: Parameter): EngineException("Expected parameter ${parameter.name} to have Many Annotation, because it is a List.")
+internal class NoBooleanReturned(level: Int, method: Method): EngineException("Expected method with Boolean as return type for @Validator($level) ${method.name}, but it has ${method.returnType.simpleName}.")
 
-class ValidatorException(msg: String): EngineException(msg)
+internal class NoManyAnnotationException(parameter: Parameter): EngineException("Expected parameter ${parameter.name} to have Many Annotation, because it is a List.")
+
+internal class ValidatorException(msg: String): EngineException(msg)
