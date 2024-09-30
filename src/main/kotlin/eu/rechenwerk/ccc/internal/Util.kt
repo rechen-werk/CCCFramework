@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc.internals
+package eu.rechenwerk.ccc.internal
 
 internal fun <T> Collection<T?>.only(exceptionMessage: () -> String): T {
     if(this.size != 1) throw SingleException(exceptionMessage.invoke())

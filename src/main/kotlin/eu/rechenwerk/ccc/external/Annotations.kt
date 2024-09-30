@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc
+package eu.rechenwerk.ccc.external
 
 import kotlin.reflect.KClass
 
@@ -22,3 +22,7 @@ annotation class Validated
 @Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Many(val sizeParamName: String, val type: KClass<*>)
+
+@Target(AnnotationTarget.FIELD)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Engine

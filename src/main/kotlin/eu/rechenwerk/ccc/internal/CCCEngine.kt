@@ -1,24 +1,50 @@
-package eu.rechenwerk.ccc.internals
+package eu.rechenwerk.ccc.internal
 
-import eu.rechenwerk.ccc.*
+import eu.rechenwerk.ccc.external.*
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import java.io.File
-import java.lang.StringBuilder
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 import java.util.*
 import java.util.zip.ZipFile
-import kotlin.collections.HashMap
 import kotlin.reflect.KClass
 
-class CCCEngine internal constructor(private val packageName: String, private val folder: File) {
 
-    fun run() = highestLevel()?.let { run(it) } ?: System.err.println("No method annotated with @Level(Int).")
+open class CCCEngine internal constructor(private val folder: File) {
+    companion object {
+        private val packages: List<String> = packages()
 
-    fun run(level: Int) {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            val engines = packages
+                .map { pkg ->
+                    Reflections(pkg, Scanners.FieldsAnnotated)
+                }
+                .flatMap { ref -> ref.getFieldsAnnotatedWith(Engine()).map{ ref to it }}
+                .distinctBy { it.second }
+
+            if (engines.size != 1) {
+                System.err.println("Expected exactly one engine config.")
+                return
+            }
+            val engine = engines.first()
+            if(engine.second.type != CCCEngine::class.java && engine.second.type != CCCEngineForLevel::class.java) {
+                System.err.println("Engine must be of type CCCEngine or CCCEngineForLevel.")
+                return
+            }
+            engine.second.trySetAccessible()
+            (engine.second.get(engine.first) as CCCEngine).start()
+        }
+    }
+
+    infix fun runLevel(level: Int): CCCEngineForLevel = CCCEngineForLevel(folder, level)
+
+    protected open fun start() = highestLevel()?.let { start(it) } ?: System.err.println("No method annotated with @Level(Int).")
+
+    protected fun start(level: Int) {
         try {
             val method = method(level)
             val validator = if(method.isAnnotationPresent(Validated::class.java)) {
@@ -51,8 +77,10 @@ class CCCEngine internal constructor(private val packageName: String, private va
     }
 
     private fun method(level: Int): Method {
-        val method = Reflections(packageName, Scanners.MethodsAnnotated)
-            .getMethodsAnnotatedWith(Level(level))
+        val method = packages
+            .flatMap { pkg -> Reflections(pkg, Scanners.MethodsAnnotated)
+                .getMethodsAnnotatedWith(Level(level)) }
+            .distinct()
             .only{ "Expected exactly one method with @Level($level)." }
 
         if (method.returnType != CharSequence::class.java && method.returnType != String::class.java && method.returnType != Line::class.java) {
@@ -62,8 +90,10 @@ class CCCEngine internal constructor(private val packageName: String, private va
     }
 
     private fun validator(level: Int): Method? {
-        val method = Reflections(packageName, Scanners.MethodsAnnotated)
-            .getMethodsAnnotatedWith(Validator(level))
+        val method = packages
+            .flatMap { pkg -> Reflections(pkg, Scanners.MethodsAnnotated)
+                .getMethodsAnnotatedWith(Validator(level)) }
+            .distinct()
             .onlyOrNull { "Expected at most one method with @Validator($level)." }
 
         method?.let {
@@ -75,8 +105,9 @@ class CCCEngine internal constructor(private val packageName: String, private va
     }
 
     private fun highestLevel(): Int? {
-        return Reflections(packageName, Scanners.MethodsAnnotated)
-            .getMethodsAnnotatedWith(Level::class.java)
+        return packages
+            .flatMap { pkg -> Reflections(pkg, Scanners.MethodsAnnotated)
+                .getMethodsAnnotatedWith(Level::class.java) }
             .maxOfOrNull { it.getAnnotation(Level::class.java).value }
     }
 
