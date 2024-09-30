@@ -40,7 +40,7 @@ open class CCCEngine internal constructor(private val folder: File) {
         }
     }
 
-    infix fun runLevel(level: Int): CCCEngineForLevel = CCCEngineForLevel(folder, level)
+    infix fun level(level: Int): CCCEngineForLevel = CCCEngineForLevel(folder, level)
 
     protected open fun start() = highestLevel()?.let { start(it) } ?: System.err.println("No method annotated with @Level(Int).")
 
