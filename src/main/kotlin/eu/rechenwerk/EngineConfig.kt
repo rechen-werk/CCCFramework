@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc
+package eu.rechenwerk
 import eu.rechenwerk.ccc.external.CCC.Companion.ccc
 import eu.rechenwerk.ccc.external.Engine
 
