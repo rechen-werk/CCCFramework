@@ -12,3 +12,6 @@ internal fun <T> Collection<T?>.onlyOrNull(exceptionMessage: () -> String): T? {
 
 internal operator fun String.times(other: Int) = this.repeat(other)
 internal operator fun Int.times(other: String) = other.repeat(this)
+
+internal operator fun Char.times(other: Int) = this.toString().repeat(other)
+internal operator fun Int.times(other: Char) = other.toString().repeat(this)
