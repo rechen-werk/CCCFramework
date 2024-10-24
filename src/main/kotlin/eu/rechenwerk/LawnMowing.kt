@@ -1,5 +1,6 @@
 package eu.rechenwerk
 
+import eu.rechenwerk.LawnMowing.TreeSide.*
 import eu.rechenwerk.ccc.external.Many
 import eu.rechenwerk.ccc.internal.times
 
@@ -12,8 +13,6 @@ class LawnMowing(
         operator fun component1() = row
         operator fun component2() = col
     }
-    private val validate = true
-
     val tree = getTreePosition()
 
     val above = tree.row
@@ -54,11 +53,136 @@ class LawnMowing(
     }
 
     fun mowAdvanced(): Lawn {
+        return if(isAtWall()) {
+            mowFromWall()
+        } else {
+            mow()
+        }
+    }
+
+    private fun isAtWall() =
+        tree.row == 0 || tree.col == 0 || tree.row == height - 1 || tree.col == width - 1
+
+    private enum class TreeSide {
+        NORTH, EAST, SOUTH, WEST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST
+    }
+
+    private fun mowFromWall(): Lawn {
         var path = ""
+        val treeSide =
+            if(tree.row == 0) {
+                when (tree.col) {
+                    0 -> NORTH_WEST
+                    width - 1 -> NORTH_EAST
+                    else -> NORTH
+                }
+            } else if(tree.row == height - 1) {
+                when (tree.col) {
+                    0 -> SOUTH_WEST
+                    width - 1 -> SOUTH_EAST
+                    else -> SOUTH
+                }
+            } else if(tree.col == 0) {
+                WEST
+            } else {
+                EAST
+            }
+
+        val (treeLeft, treeRight) = when(treeSide) {
+            NORTH -> Pair(left, right)
+            EAST -> Pair(above, below)
+            SOUTH -> Pair(right, left)
+            WEST -> Pair(below, above)
+            NORTH_WEST -> Pair(0, right)
+            NORTH_EAST -> Pair(0, below)
+            SOUTH_WEST -> Pair(0, above)
+            SOUTH_EAST -> Pair(0, left)
+        }
+        val (treeWidth, treeHeight) = when(treeSide) {
+            NORTH -> Pair(width, height)
+            EAST -> Pair(height, width)
+            SOUTH -> Pair(width, height)
+            WEST -> Pair(height, width)
+            NORTH_WEST -> Pair(width, height)
+            NORTH_EAST -> Pair(height, width)
+            SOUTH_WEST -> Pair(height, width)
+            SOUTH_EAST -> Pair(width, height)
+        }
+        val (leftChar, rightChar) = when(treeSide) {
+            NORTH -> Pair('A', 'D')
+            EAST -> Pair('W', 'S')
+            SOUTH -> Pair('D', 'A')
+            WEST -> Pair('S', 'W')
+            NORTH_WEST -> Pair('A', 'D')
+            NORTH_EAST -> Pair('W', 'S')
+            SOUTH_WEST -> Pair('S', 'W')
+            SOUTH_EAST -> Pair('D', 'A')
+        }
+        val (upChar, downChar) = when(treeSide) {
+            NORTH -> Pair('W', 'S')
+            EAST -> Pair('D', 'A')
+            SOUTH -> Pair('S', 'W')
+            WEST -> Pair('A', 'D')
+            NORTH_WEST -> Pair('W', 'S')
+            NORTH_EAST -> Pair('D', 'A')
+            SOUTH_WEST -> Pair('A', 'D')
+            SOUTH_EAST -> Pair('S', 'W')
+        }
+        if (treeLeft == 0) {
+            path += (treeWidth - 1) * rightChar
+            path += fill(downChar, leftChar, rightChar, treeHeight, treeWidth)
+        } else if(treeLeft % 2 == 0) {
+            path += treeRight * rightChar
+            path += downChar
+            path += treeRight * leftChar
+            path += fill(leftChar, upChar, downChar, treeLeft + 1, 2)
+            path += fill(downChar, rightChar, leftChar, treeHeight - 1, treeWidth)
+        } else if(treeRight % 2 == 0) {
+            path += treeLeft * leftChar
+            path += downChar
+            path += treeLeft * rightChar
+            path += fill(rightChar, upChar, downChar, treeRight + 1, 2)
+            path += fill(downChar, leftChar, rightChar, treeHeight - 1, treeWidth)
+        } else {
+            path += treeRight * rightChar
+            path += downChar
+            path += (treeWidth - 2) * leftChar
+            path += fill(downChar, rightChar, leftChar, treeHeight - 1, treeWidth -1)
+            path += fill(leftChar, upChar, downChar, 2, treeHeight -1)
+            path += fill(upChar, rightChar, leftChar, 2, treeLeft)
+        }
+
+        //rotate path back
+        path = path.drop(1)
 
         val solution = Lawn(this.width, this.height, this.lawn, path)
 
+        // debug
+        println("Lawn:")
+        lawn.forEach { println(it) }
+        println("Path:")
+        println(path)
+
         return solution
+    }
+
+    private fun fill(
+        trajectoryChar: Char,
+        directionChar: Char,
+        backDirectionChar: Char,
+        trajectoryLength: Int,
+        direcitonWidth: Int
+    ): String {
+        var path = ""
+        for (i in 1 until trajectoryLength) {
+            path += trajectoryChar
+            path += if(i % 2 == 1) {
+                (direcitonWidth - 1) * directionChar
+            } else {
+                (direcitonWidth - 1) * backDirectionChar
+            }
+        }
+        return path
     }
 
     private fun fillQuadrant(uneven: Boolean, quadrant: Int): String {
@@ -112,7 +236,7 @@ class LawnMowing(
         return path.drop(1)
     }
 
-    fun goToWall(uneven: Boolean, quadrant: Int): String {
+    private fun goToWall(uneven: Boolean, quadrant: Int): String {
         var path = ""
         val (walkDirection, backDirection, trajectory) = when(quadrant) {
             1 -> Triple('S', 'W', 'A')
@@ -152,7 +276,7 @@ class LawnMowing(
         return path
     }
 
-    fun fillRest(uneven: Boolean, quadrant: Int): String {
+    private fun fillRest(uneven: Boolean, quadrant: Int): String {
         //println("$quadrant ${if(uneven) " ODD " else " EVEN "} above: $above below: $below left: $left right: $right" )
         var path = ""
         val (walkDirection, backDirection, trajectory) = when(quadrant) {
