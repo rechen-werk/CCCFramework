@@ -1,12 +1,9 @@
 plugins {
     kotlin("jvm") version "1.8.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
-
 
 group = "eu.rechenwerk"
 version = "1.0-SNAPSHOT"
-
 
 repositories {
     mavenCentral()
@@ -23,7 +20,7 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 tasks.compileKotlin {
