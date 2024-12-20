@@ -1,37 +1,27 @@
 package eu.rechenwerk.ccc.internal
 
 import eu.rechenwerk.ccc.external.*
-import org.reflections.Reflections
-import org.reflections.scanners.Scanners
+import eu.rechenwerk.ccc.internal.services.*
 import java.io.File
 import java.lang.reflect.Method
-import java.lang.reflect.Parameter
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 import java.util.*
-import java.util.zip.ZipFile
-import kotlin.reflect.KClass
 
 
-class CCCEngine internal constructor(private val folder: File, private var level: Int?) {
-    companion object {
-        private val packages: List<String> = packages()
-    }
-
+class CCCEngine internal constructor(
+    private val location: File,
+    private var level: Int,
+    private val cookie: String?,
+    private val autoDownload: Boolean,
+    private val autoUpload: Boolean,
+) {
     fun start() {
-        if(level == null) {
-            level = highestLevel()
-        }
-        level?.let { start(it) } ?: System.err.println("No method annotated with @Level(Int).")
-    }
-
-    fun start(level: Int) {
         try {
-            val method = method(level)
-            val validator = if(method.isAnnotationPresent(Validated::class.java)) {
-                validator(level) ?: throw ValidatorException("Expected Validator for @Level($level), but found none.")
-            } else null
-            val problems = scanners(level).filterKeys { name -> name.endsWith(".in") }
+            val (method, validator, lev) = methods(level)
+            this.level = lev
+
+            val problems = input(location, level)
 
             if(method.getAnnotationsByType(Example::class.java).isNotEmpty()) {
                 printExamples(method, validator, problems, level)
@@ -48,130 +38,27 @@ class CCCEngine internal constructor(private val folder: File, private var level
         }
     }
 
-    private fun getZip(level: Int) = folder.listFiles()?.firstOrNull { it.name == "level$level.zip" } ?: throw NoZipException(level)
-
-    private fun scanners(level: Int): Map<String, Scanner> {
-        val zipFile = ZipFile(getZip(level))
-        return zipFile.entries().asSequence().map {
-            it.name to Scanner(zipFile.getInputStream(it))
-        }.toMap()
-    }
-
-    private fun method(level: Int): Method {
-        val method = packages
-            .flatMap { pkg -> Reflections(pkg, Scanners.MethodsAnnotated)
-                .getMethodsAnnotatedWith(Level(level)) }
-            .distinct()
-            .only{ "Expected exactly one method with @Level($level)." }
-
-        if (method.returnType != CharSequence::class.java && method.returnType != String::class.java && method.returnType != Line::class.java) {
-            throw NoCharSequenceReturned(level, method)
-        }
-        return method
-    }
-
-    private fun validator(level: Int): Method? {
-        val method = packages
-            .flatMap { pkg -> Reflections(pkg, Scanners.MethodsAnnotated)
-                .getMethodsAnnotatedWith(Validator(level)) }
-            .distinct()
-            .onlyOrNull { "Expected at most one method with @Validator($level)." }
-
-        method?.let {
-            if (method.returnType != Boolean::class.java) {
-                throw NoBooleanReturned(level, it)
-            }
-        }
-        return method
-    }
-
-    private fun highestLevel(): Int? {
-        return packages
-            .flatMap { pkg -> Reflections(pkg, Scanners.MethodsAnnotated)
-                .getMethodsAnnotatedWith(Level::class.java) }
-            .maxOfOrNull { it.getAnnotation(Level::class.java).value }
-    }
-
-    private fun Scanner.apply(method: Method, validator: Method?): Pair<String, Boolean?> {
-        val formPars = method.parameters
-        val actPars = HashMap<String, Any>()
-        actPars.fill(this, formPars)
-        if(validator != null) {
-            val ex = ValidatorException("@Validator ${validator.name} did not have the same parameters as @Level ${method.name}.")
-            val validatorFormPars = validator.parameters
-            if(formPars.size != validatorFormPars.size) throw ex
-            formPars.forEachIndexed { index, parameter -> if(parameter.type != validatorFormPars[index].type) throw ex }
-        }
-        // I am not using actPars.values, because maps do not have to preserve ordering
-        return Pair(
-            method.invoke(null, *formPars.map { actPars[it.name] }.toTypedArray()).toString(),
-            validator?.invoke(null, *formPars.map { actPars[it.name] }.toTypedArray()) as Boolean?
-        )
-    }
-
-    private fun HashMap<String, Any>.fill(scanner: Scanner, parameters: Array<Parameter>) {
-        parameters.forEach { param ->
-            this[param.name] = when (param.type.kotlin) {
-                List::class -> scanner.scanMany(param, this)
-                else -> scanner.scan(param.type.kotlin)
-            }
-        }
-    }
-
-    private fun Scanner.scan(type: KClass<*>): Any {
-        val next = when(type) {
-            Byte::class -> nextByte()
-            Short::class -> nextShort()
-            Int::class -> nextInt()
-            Long::class -> nextLong()
-            Float::class -> nextFloat()
-            Double::class -> nextDouble()
-            Char::class -> next()[0]
-            Line::class -> Line(nextLine().ifBlank { nextLine() })
-            String::class -> next()
-            else -> {
-                val constructor = type.java.constructors[0]
-                val formPars = constructor?.parameters ?: arrayOf()
-                val actPars = HashMap<String, Any>()
-                actPars.fill(this, formPars)
-                // I am not using actPars.values, because maps do not have to preserve ordering
-                constructor.newInstance(*formPars.map { actPars[it.name] }.toTypedArray())
-            }
-        }
-        return next
-    }
-
-    private fun Scanner.scanMany(parameter: Parameter, actPars: Map<String, Any>): Any {
-        val anno = parameter.getAnnotation(Many::class.java) ?: throw NoManyAnnotationException(parameter)
-        val nTimes = actPars[anno.sizeParamName] as Int
-        val list: MutableList<Any> = mutableListOf()
-
-        repeat(nTimes) { list += scan(anno.type)}
-
-        return list
-    }
-
     private fun getExampleOutput(level: Int): String {
-        val scanners = scanners(level)
-        val outputScanner = scanners
-            .filter { it.key.endsWith(".out") }
-            .map { it.value }
-            .first()
+        val outputScanner = solution(location, level)[0]
 
-        val sb = StringBuilder()
-        if (outputScanner.hasNextLine())
-            sb.append(outputScanner.nextLine())
-        while (outputScanner.hasNextLine())
-            sb.append("\n").append(outputScanner.nextLine())
+        if(outputScanner != null) {
+            val sb = StringBuilder()
+            if (outputScanner.hasNextLine())
+                sb.append(outputScanner.nextLine())
+            while (outputScanner.hasNextLine())
+                sb.append("\n").append(outputScanner.nextLine())
 
-        return sb.toString()
+            return sb.toString()
+        } else {
+            throw EngineException("Could not find a solution for the example.")
+        }
     }
 
-    private fun printExamples(method: Method, validator: Method?, problems: Map<String, Scanner>, level: Int) {
+    private fun printExamples(method: Method, validator: Method?, problems: Map<Int, Scanner>, level: Int) {
         val examples = method.getAnnotationsByType(Example::class.java).map { it.value }.sorted()
         examples.forEach { example ->
             val scanner = problems
-                .filterKeys { filename -> filename == "level${level}_${if (example == 0) "example" else example}.in" }
+                .filterKeys { problem -> problem == example }
                 .map { it.value }
                 .only { "Invalid value for @Example($example). Files for this level are \"${problems.map { it.key }.joinToString("\", \"")}\". Note: level${level}_example.in is default or value 0." }
             val (result, valid) = scanner.apply(method, validator)
@@ -180,12 +67,8 @@ class CCCEngine internal constructor(private val folder: File, private var level
         }
     }
 
-    private fun testExample(level: Int, results: Map<String, String>) {
-        val exampleResult = results
-            .filterKeys { it.contains("example") }
-            .map { it.value }
-            .only{ "Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name." }
-
+    private fun testExample(level: Int, results: Map<Int, String>) {
+        val exampleResult = results[0] ?: throw EngineException("Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name.")
 
         val exampleSolution = getExampleOutput(level)
         val line = 103 * "-"
@@ -193,12 +76,11 @@ class CCCEngine internal constructor(private val folder: File, private var level
             println(line)
             println("The Example for level $level has been solved correctly. Writing all files.")
             println(line)
-            val thisLevelDirectory = folder.resolve("level$level").toPath()
+            val thisLevelDirectory = location.resolve("level$level").toPath()
             Files.createDirectories(thisLevelDirectory)
             results
-                .filterKeys { it.contains(".in")  }
                 .forEach{
-                    val file = thisLevelDirectory.resolve(it.key.replace("in", "out"))
+                    val file = thisLevelDirectory.resolve("level${level}_${it.key}.out".replace("_0.", "_example."))
                     Files.deleteIfExists(file)
                     Files.writeString(file, it.value, StandardOpenOption.CREATE)
                 }
@@ -214,24 +96,24 @@ class CCCEngine internal constructor(private val folder: File, private var level
         }
     }
 
-    private fun testExamples(level: Int, results: Map<String, Pair<String, Boolean>>) {
+    private fun testExamples(level: Int, results: Map<Int, Pair<String, Boolean>>) {
         val line = 103 * "-"
         println(line)
         println("Testing your solutions according to @Validator($level).")
 
-        val thisLevelDirectory = folder.resolve("level$level").toPath()
+        val thisLevelDirectory = location.resolve("level$level").toPath()
         Files.createDirectories(thisLevelDirectory)
         results.forEach{
             println(line)
             println("${it.key}: ${if(it.value.second) "VALID" else "INVALID."}")
-            val file = thisLevelDirectory.resolve(it.key.replace("in", "out"))
+            val file = thisLevelDirectory.resolve("level${level}_${it.key}.out".replace("_0.", "_example."))
             Files.deleteIfExists(file)
             if(it.value.second) {
                 val result = it.value
                 Files.writeString(file, result.first, StandardOpenOption.CREATE)
                 println("Output has been written to $file.")
             } else {
-                println("Annotate the level method with @Example(${it.key.replace("example", "0").split("_")[1].split(".")[0]}) to get more information about your output to the example.")
+                println("Annotate the level method with @Example(${it.key}) to get more information about your output to the example.")
             }
         }
         println(line)

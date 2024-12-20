@@ -14,7 +14,7 @@ class CloudflightCodingContestConfig {
     private var cookie: String? = null
     private var autoDownload = false
     private var autoUpload = false
-    private var level: Int? = null
+    private var level: Int = 0
 
     fun location(value: String) {
         location = value
@@ -39,7 +39,7 @@ class CloudflightCodingContestConfig {
         if(level < 0) throw IllegalArgumentException("Level must be positive!")
 
         if(level == 0) {
-            this.level = null
+            this.level = 0
         } else {
             this.level = level
         }
@@ -48,7 +48,10 @@ class CloudflightCodingContestConfig {
     private fun build(): CCCEngine {
         return CCCEngine(
             File(location ?: throw InvalidConfigException("Location must be specified!")),
-            level
+            level,
+            cookie,
+            autoDownload,
+            autoUpload
         )
     }
 

@@ -15,14 +15,6 @@ annotation class Example(val value: Int = 0)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Validator(val value: Int)
 
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Validated
-
 @Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FIELD)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Many(val sizeParamName: String, val type: KClass<*>)
-
-@Target(AnnotationTarget.FIELD)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Engine

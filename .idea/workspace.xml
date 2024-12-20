@@ -5,19 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="03d48b8f-471b-4856-8ddc-5afecda87723" name="Changes" comment="Change Engine configuration">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/Contest.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/CloudflightCodingContestConfig.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/Level1.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/DownloadService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/InputService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/MethodService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/PrintService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/ScannerService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/UploadService.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/ZipService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/EngineConfig.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/external/CCC.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/CloudflightCodingContestConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/CloudflightCodingContestConfig.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/external/Annotations.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/external/Annotations.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCEngine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCEngine.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCEngineForLevel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Exceptions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Exceptions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/PackageScan.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/PackageService.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,9 +32,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Kotlin Script" />
         <option value="Kotlin File" />
         <option value="Kotlin Class" />
-        <option value="Kotlin Script" />
       </list>
     </option>
   </component>
@@ -71,6 +71,7 @@
     "Gradle.Build CCCFramework.executor": "Run",
     "Kotlin script (Beta).CodingContest.kts.executor": "Run",
     "Kotlin script (Beta).Config.kts.executor": "Run",
+    "Kotlin script (Beta).Contest.kts.executor": "Run",
     "Kotlin script (Beta).EngineConfig.kts.executor": "Run",
     "Kotlin.CCCEngine.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -97,11 +98,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk" />
       <recent name="$PROJECT_DIR$/src/main" />
       <recent name="$PROJECT_DIR$/src/main/kotlin" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/scripts" />
     </key>
   </component>
   <component name="RunManager" selected="Kotlin script (Beta).Contest.kts">
@@ -147,8 +148,18 @@
       <updated>1734602196160</updated>
       <workItem from="1734602197220" duration="11469000" />
       <workItem from="1734618890234" duration="2787000" />
-      <workItem from="1734677269984" duration="5650000" />
+      <workItem from="1734677269984" duration="6940000" />
+      <workItem from="1734684218913" duration="6316000" />
     </task>
+    <task id="LOCAL-00001" summary="Change Engine configuration">
+      <option name="closed" value="true" />
+      <created>1734682946371</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1734682946371</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
