@@ -14,15 +14,23 @@ This zip-file has to be put in a directory where the framework can find it.
 After execution the framework will write the solutions into the same directory, only if the solution is correct.
 To configure the location, the participant must use the `@Engine`.
 
-### @Engine
-The CCC Framework needs one object annotated with `@Engine` for configuration where you can set the input folder and the wanted level as seen below.
-
+### Contest.kts
+The CCC Framework needs one configuration script where you can set the input folder and the wanted level as seen below.
+Furthermore you can set the a cookie, which will allow you to automatically download and upload the files from Catcoder.
+When you are ready just run the Contest script.
 ```kotlin
-@Engine val engine = ccc input "/path/to/zips" level 1
+ccc {
+    location("/path/to/zips")
+    level(0)
+    cookie("m2319Jid8234jhPn923m90f8vvc089") {
+        autoDownload = true
+        autoUpload = true
+    }
+}
 ```
 
-The `/path/to/zips` has to point to the folder where all the zips will be downloaded to.
-In addition, a level can be set optionally by adding `level X` in the end. 
+`/path/to/zips` has to point to the folder where all the zips will be downloaded to.
+In addition, a level can be set optionally by adding `level(x)` in the end. 
 If omitted, the framework will take the highest level defined in code and execute that function.
 
 ### @Level

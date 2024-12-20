@@ -13,38 +13,19 @@ import java.util.zip.ZipFile
 import kotlin.reflect.KClass
 
 
-open class CCCEngine internal constructor(private val folder: File) {
+class CCCEngine internal constructor(private val folder: File, private var level: Int?) {
     companion object {
         private val packages: List<String> = packages()
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val engines = packages
-                .map { pkg ->
-                    Reflections(pkg, Scanners.FieldsAnnotated)
-                }
-                .flatMap { ref -> ref.getFieldsAnnotatedWith(Engine()).map{ ref to it }}
-                .distinctBy { it.second }
-
-            if (engines.size != 1) {
-                System.err.println("Expected exactly one engine config.")
-                return
-            }
-            val engine = engines.first()
-            if(engine.second.type != CCCEngine::class.java && engine.second.type != CCCEngineForLevel::class.java) {
-                System.err.println("Engine must be of type CCCEngine or CCCEngineForLevel.")
-                return
-            }
-            engine.second.trySetAccessible()
-            (engine.second.get(engine.first) as CCCEngine).start()
-        }
     }
 
-    infix fun level(level: Int): CCCEngineForLevel = CCCEngineForLevel(folder, level)
+    fun start() {
+        if(level == null) {
+            level = highestLevel()
+        }
+        level?.let { start(it) } ?: System.err.println("No method annotated with @Level(Int).")
+    }
 
-    protected open fun start() = highestLevel()?.let { start(it) } ?: System.err.println("No method annotated with @Level(Int).")
-
-    protected fun start(level: Int) {
+    fun start(level: Int) {
         try {
             val method = method(level)
             val validator = if(method.isAnnotationPresent(Validated::class.java)) {

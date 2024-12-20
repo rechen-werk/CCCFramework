@@ -17,6 +17,7 @@ dependencies {
     implementation("org.slf4j:slf4j-nop:2.0.9")
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
+    implementation(kotlin("script-runtime"))
 }
 
 kotlin {
