@@ -12,12 +12,12 @@ repositories {
 dependencies {
     //engine
     implementation("org.reflections:reflections:0.10.2")
-
-    //stuff
     implementation("org.slf4j:slf4j-nop:2.0.9")
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("reflect"))
     implementation(kotlin("script-runtime"))
+    implementation("org.springframework:spring-web:6.2.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+
 }
 
 kotlin {

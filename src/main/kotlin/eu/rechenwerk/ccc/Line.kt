@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc.external
+package eu.rechenwerk.ccc
 
 /**
  * Class for annotations, this lets the scanner read an entire line.

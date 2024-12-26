@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc.external
+package eu.rechenwerk.ccc
 
 import kotlin.reflect.KClass
 

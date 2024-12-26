@@ -3,7 +3,7 @@ package eu.rechenwerk.ccc.internal
 import java.lang.reflect.Method
 import java.lang.reflect.Parameter
 
-internal open class EngineException(message: String) : Exception(message)
+internal open class EngineException(override val message: String) : Exception(message)
 
 internal class NoZipException(level: Int) : EngineException("Could not find a zip for level $level.")
 

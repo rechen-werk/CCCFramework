@@ -1,11 +1,11 @@
 package eu.rechenwerk.ccc.internal.services
 
-import eu.rechenwerk.ccc.external.Example
+import eu.rechenwerk.ccc.Example
 import eu.rechenwerk.ccc.internal.only
 import java.lang.reflect.Method
 import java.util.*
 
-private fun printExamples(method: Method, validator: Method?, problems: Map<Int, Scanner>, level: Int) {
+fun printExamples(method: Method, validator: Method?, problems: Map<Int, Scanner>, level: Int) {
     val examples = method.getAnnotationsByType(Example::class.java).map { it.value }.sorted()
     examples.forEach { example ->
         val scanner = problems

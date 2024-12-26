@@ -108,11 +108,6 @@ When you think you solved the problem, remove it and execute all levels again to
 When you just write `@Example` - without value - then per default the example level is executed.
 You can achieve the same effect when writing `@Example(0)`.
 
-### @Validated
-You can add `@Validated` to your levels function and enable validation.
-Important is then, that you have a second `@Validator` function which validates that your code is correct.
-More about that in the next section.
-
 ### @Validator
 Sometimes solutions are not unique. That means that the example output is not of use really.
 To solve this issue you can write a validator function.

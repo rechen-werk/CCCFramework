@@ -1,7 +1,7 @@
 package eu.rechenwerk.ccc.internal.services
 
-import eu.rechenwerk.ccc.external.Line
-import eu.rechenwerk.ccc.external.Many
+import eu.rechenwerk.ccc.Line
+import eu.rechenwerk.ccc.Many
 import eu.rechenwerk.ccc.internal.NoManyAnnotationException
 import eu.rechenwerk.ccc.internal.ValidatorException
 import java.lang.reflect.Method

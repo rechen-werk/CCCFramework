@@ -1,40 +1,33 @@
 package eu.rechenwerk.ccc.internal
 
-import eu.rechenwerk.ccc.external.*
+import eu.rechenwerk.ccc.Example
 import eu.rechenwerk.ccc.internal.services.*
 import java.io.File
-import java.lang.reflect.Method
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
-import java.util.*
-
 
 class CCCEngine internal constructor(
     private val location: File,
     private var level: Int,
-    private val cookie: String?,
-    private val autoDownload: Boolean,
-    private val autoUpload: Boolean,
+    private val catCoder: CatCoder?
 ) {
     fun start() {
-        try {
-            val (method, validator, lev) = methods(level)
-            this.level = lev
+        catCoder?.downloadMaterials(location)
 
-            val problems = input(location, level)
+        val (method, validator, lev) = methods(level)
+        this.level = lev
 
-            if(method.getAnnotationsByType(Example::class.java).isNotEmpty()) {
-                printExamples(method, validator, problems, level)
+        val problems = input(location, level)
+
+        if(method.getAnnotationsByType(Example::class.java).isNotEmpty()) {
+            printExamples(method, validator, problems, level)
+        } else {
+            val results = problems.mapValues { (_, scanner) -> scanner.apply(method, validator) }
+            if(validator != null) {
+                testExamples(level, results.mapValues { Pair(it.value.first, it.value.second!!) })
             } else {
-                val results = problems.mapValues { (_, scanner) -> scanner.apply(method, validator) }
-                if(validator != null) {
-                    testExamples(level, results.mapValues { Pair(it.value.first, it.value.second!!) })
-                } else {
-                    testExample(level, results.mapValues { it.value.first })
-                }
+                testExample(level, results.mapValues { it.value.first })
             }
-        } catch (e: EngineException) {
-            System.err.println(e.message ?: throw e)
         }
     }
 
@@ -51,19 +44,6 @@ class CCCEngine internal constructor(
             return sb.toString()
         } else {
             throw EngineException("Could not find a solution for the example.")
-        }
-    }
-
-    private fun printExamples(method: Method, validator: Method?, problems: Map<Int, Scanner>, level: Int) {
-        val examples = method.getAnnotationsByType(Example::class.java).map { it.value }.sorted()
-        examples.forEach { example ->
-            val scanner = problems
-                .filterKeys { problem -> problem == example }
-                .map { it.value }
-                .only { "Invalid value for @Example($example). Files for this level are \"${problems.map { it.key }.joinToString("\", \"")}\". Note: level${level}_example.in is default or value 0." }
-            val (result, valid) = scanner.apply(method, validator)
-            println("Level $level-$example${valid?.let { if(it) " (VALID according to @Validator)" else " (INVALID according to @Validator)" } ?: ""}:")
-            println(result)
         }
     }
 

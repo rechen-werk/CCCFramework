@@ -1,6 +1,8 @@
 package eu.rechenwerk.ccc
 
 import eu.rechenwerk.ccc.internal.CCCEngine
+import eu.rechenwerk.ccc.internal.CatCoder
+import eu.rechenwerk.ccc.internal.EngineException
 import eu.rechenwerk.ccc.internal.InvalidConfigException
 import java.io.File
 
@@ -11,26 +13,29 @@ fun ccc(init: CloudflightCodingContestConfig.() -> Unit) {
 class CloudflightCodingContestConfig {
 
     private var location: String? = null
-    private var cookie: String? = null
-    private var autoDownload = false
-    private var autoUpload = false
+    private var catCoder: CatCoder? = null
     private var level: Int = 0
 
     fun location(value: String) {
         location = value
     }
 
-    fun cookie(cookie: String, enable: (CloudflightCodingContestAutoConfig.() -> Unit)? = null) {
-        this.cookie = cookie
-        if(enable != null) {
-            val cccac = CloudflightCodingContestAutoConfig()
-            cccac.enable()
-            this.autoDownload = cccac.autoDownload
-            this.autoUpload = cccac.autoUpload
+    fun catcoder(init: (CloudflightCodingContestCatCoderConfig.() -> Unit)? = null) {
+        if(init != null) {
+            val cccccc = CloudflightCodingContestCatCoderConfig()
+            cccccc.init()
+            catCoder = CatCoder(
+                cccccc.url ?: throw IllegalArgumentException("Url for CatCoder must be provided!"),
+                cccccc.cookie ?: throw IllegalArgumentException("Cookie for CatCoder must be provided!"),
+                cccccc.autoDownload,
+                cccccc.autoUpload
+            )
         }
     }
 
-    class CloudflightCodingContestAutoConfig {
+    class CloudflightCodingContestCatCoderConfig {
+        var url: String? = null
+        var cookie: String? = null
         var autoDownload = false
         var autoUpload = false
     }
@@ -49,9 +54,7 @@ class CloudflightCodingContestConfig {
         return CCCEngine(
             File(location ?: throw InvalidConfigException("Location must be specified!")),
             level,
-            cookie,
-            autoDownload,
-            autoUpload
+            catCoder
         )
     }
 
@@ -59,7 +62,11 @@ class CloudflightCodingContestConfig {
         fun build(init: CloudflightCodingContestConfig.() -> Unit) {
             val cccc = CloudflightCodingContestConfig()
             cccc.init()
-            return cccc.build().start()
+            try {
+                cccc.build().start()
+            } catch (e: EngineException) {
+                System.err.println(e.message)
+            }
         }
     }
 }
