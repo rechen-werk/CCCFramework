@@ -8,28 +8,9 @@ import java.nio.file.StandardOpenOption
 
 class CCCEngine internal constructor(
     private val location: File,
-    private var level: Int,
-    private val catCoder: CatCoder?
+    private var level: Int
 ) {
-    fun start() {
-        catCoder?.downloadMaterials(location)
 
-        val (method, validator, lev) = methods(level)
-        this.level = lev
-
-        val problems = input(location, level)
-
-        if(method.getAnnotationsByType(Example::class.java).isNotEmpty()) {
-            printExamples(method, validator, problems, level)
-        } else {
-            val results = problems.mapValues { (_, scanner) -> scanner.apply(method, validator) }
-            if(validator != null) {
-                testExamples(level, results.mapValues { Pair(it.value.first, it.value.second!!) })
-            } else {
-                testExample(level, results.mapValues { it.value.first })
-            }
-        }
-    }
 
     private fun getExampleOutput(level: Int): String {
         val outputScanner = solution(location, level)[0]
@@ -47,23 +28,24 @@ class CCCEngine internal constructor(
         }
     }
 
-    private fun testExample(level: Int, results: Map<Int, String>) {
+    private fun testExample(level: Int, results: Map<Int, String>): Pair<Boolean, Map<Int, File>> {
         val exampleResult = results[0] ?: throw EngineException("Could not find an unique example level $level. Expecting exactly 1 '.in'-file with 'example' in its name.")
 
         val exampleSolution = getExampleOutput(level)
         val line = 103 * "-"
-        if(exampleResult == exampleSolution) {
+        return if(exampleResult == exampleSolution) {
             println(line)
             println("The Example for level $level has been solved correctly. Writing all files.")
             println(line)
             val thisLevelDirectory = location.resolve("level$level").toPath()
             Files.createDirectories(thisLevelDirectory)
-            results
-                .forEach{
-                    val file = thisLevelDirectory.resolve("level${level}_${it.key}.out".replace("_0.", "_example."))
-                    Files.deleteIfExists(file)
-                    Files.writeString(file, it.value, StandardOpenOption.CREATE)
-                }
+            true to results.map {
+                val file = thisLevelDirectory.resolve("level${level}_${it.key}.out".replace("_0.", "_example."))
+                Files.deleteIfExists(file)
+                Files.writeString(file, it.value, StandardOpenOption.CREATE)
+                it.key to file.toFile()
+            }.toMap()
+
         } else {
             println(line)
             println("The Example has not been solved correctly, no files overwritten. Here are the outputs of both versions:")
@@ -73,17 +55,18 @@ class CCCEngine internal constructor(
             println("Your solution: ")
             println(exampleResult)
             println(line)
+            false to mapOf()
         }
     }
 
-    private fun testExamples(level: Int, results: Map<Int, Pair<String, Boolean>>) {
+    private fun testExamples(level: Int, results: Map<Int, Pair<String, Boolean>>): Pair<Boolean, Map<Int, File>> {
         val line = 103 * "-"
         println(line)
         println("Testing your solutions according to @Validator($level).")
 
         val thisLevelDirectory = location.resolve("level$level").toPath()
         Files.createDirectories(thisLevelDirectory)
-        results.forEach{
+        val result = results.map {
             println(line)
             println("${it.key}: ${if(it.value.second) "VALID" else "INVALID."}")
             val file = thisLevelDirectory.resolve("level${level}_${it.key}.out".replace("_0.", "_example."))
@@ -95,7 +78,9 @@ class CCCEngine internal constructor(
             } else {
                 println("Annotate the level method with @Example(${it.key}) to get more information about your output to the example.")
             }
-        }
+            it.key to file.toFile()
+        }.toMap()
         println(line)
+        return results.all { it.value.second } to result
     }
 }

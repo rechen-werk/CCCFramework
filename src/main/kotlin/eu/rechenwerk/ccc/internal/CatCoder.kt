@@ -1,26 +1,26 @@
 package eu.rechenwerk.ccc.internal
 
+import eu.rechenwerk.ccc.internal.config.Download
+import eu.rechenwerk.ccc.internal.config.Upload
 import eu.rechenwerk.ccc.internal.dtos.LevelInfoDto
 import eu.rechenwerk.ccc.internal.dtos.ResourceLocationDto
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
+import org.springframework.http.*
 import org.springframework.http.client.ClientHttpResponse
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.web.client.RequestCallback
 import org.springframework.web.client.RestTemplate
 import java.io.File
 
-
-class CatCoder(
-    url: String,
+internal class CatCoder(
+    competitionUrl: String,
     val cookie: String,
-    val autoDownload: Boolean,
-    val autoUpload: Boolean,
+    val download: Download,
+    val upload: Upload,
 ) {
-    private val id = "\\d+".toRegex().find(url)?.value
+    private val id = "\\d+".toRegex().find(competitionUrl)?.value
     private val catCoderUrlBase = "https://catcoder.codingcontest.org/api/contest/$id"
     private val catCoderLevelUrl = "https://catcoder.codingcontest.org/api/game/level/$id"
+    private val catCoderUploadBase = "https://catcoder.codingcontest.org/api/game/$id/upload/solution/level"
     private val inputUrl = "$catCoderUrlBase/file-request/input"
     private val instructionsUrl = "$catCoderUrlBase/file-request/description"
     private val restTemplate = RestTemplate()
@@ -44,16 +44,16 @@ class CatCoder(
     }
 
     fun downloadMaterials(location: File) {
-        if(autoDownload) {
-            val destinationPdf = File(location, "Level ${catcoderLevel}.pdf")
-            if(!destinationPdf.exists()) {
-                download(instructionsUrl, MediaType.APPLICATION_PDF, destinationPdf)
-            }
+        if(download == Download.NONE) return;
 
-            val destinationZip = File(location, "level${catcoderLevel}.zip")
-            if(!destinationZip.exists()) {
-                download(inputUrl, MediaType.APPLICATION_OCTET_STREAM, destinationZip)
-            }
+        val destinationPdf = File(location, "Level ${catcoderLevel}.pdf")
+        if(!destinationPdf.exists()) {
+            download(instructionsUrl, MediaType.APPLICATION_PDF, destinationPdf)
+        }
+
+        val destinationZip = File(location, "level${catcoderLevel}.zip")
+        if(!destinationZip.exists()) {
+            download(inputUrl, MediaType.APPLICATION_OCTET_STREAM, destinationZip)
         }
     }
 
@@ -80,7 +80,53 @@ class CatCoder(
         restTemplate.execute(resourceUrl, HttpMethod.GET, requestCallback, responseExtractor)
     }
 
-    fun uploadSolution() {
+    fun uploadSolution(level: Int, results: Map<Int, File>) {
+        if(upload == Upload.NONE) return
+        val levelUrl = "$catCoderUploadBase${level}_"
 
+        for (result in results.filter { it.key != 0 }) {
+            val boundary = "----WebKitFormBoundaryCCCFW$level-${result.key}-692000"
+            val headers = HttpHeaders().apply {
+                set("Cookie", "SESSION=$cookie")
+                contentType = MediaType.parseMediaType("multipart/form-data; boundary=$boundary")
+            }
+            val body = MultipartBodyBuilder()
+            body.part("file", result.value.readBytes())
+                .header("Content-Disposition", "form-data; name=\"file\"; filename=\"${result.value.name}\"")
+                .header("Content-Type", "application/octet-stream")
+            val entity = HttpEntity(body.build(), headers)
+            val theurl = levelUrl + result.key
+            val response = restTemplate.exchange(
+                theurl,
+                HttpMethod.POST,
+                entity,
+                String::class.java
+            )
+            if (response.statusCode == HttpStatus.OK) {
+                println("File uploaded successfully")
+                println("body: " + entity.body)
+                println("headers: " + entity.headers)
+                println(response.body)
+            } else {
+                println("Failed to upload file")
+            }
+        }
+    }
+    fun uploadCode(level: Int, code: File) {
+        //------WebKitFormBoundaryKIXcFAegEQ2KVoa5
+        //Content-Disposition: form-data; name="file"; filename="Level1.kt"
+        //Content-Type: text/x-kotlin
+        //
+        //
+        //------WebKitFormBoundaryKIXcFAegEQ2KVoa5--
+
+        // oder
+
+        //------WebKitFormBoundary5TzUz9dehDqGcSTv
+        //Content-Disposition: form-data; name="file"; filename="Level1.zip"
+        //Content-Type: application/zip
+        //
+        //
+        //------WebKitFormBoundary5TzUz9dehDqGcSTv--
     }
 }

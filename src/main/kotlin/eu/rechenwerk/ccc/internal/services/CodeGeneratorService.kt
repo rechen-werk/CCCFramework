@@ -15,14 +15,14 @@ fun generateLevel(level: Int, language: Language = Language.KOTLIN) {
         //@Example(0)
         @Level($level) 
         fun level$level(
-        
+           
         ): String {
             return ""
         }
         
         //@Validator($level) 
         fun validator$level(
-        
+           
         ): Boolean {
             return true
         }

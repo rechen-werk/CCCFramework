@@ -1,11 +1,5 @@
-import eu.rechenwerk.ccc.ccc
+import eu.rechenwerk.ccc.internal.config.simpleEngine
 
-ccc {
-    location("/home/adrian/ccc")
-    catcoder {
-        url = "https://catcoder.codingcontest.org/training/6142/play"
-        cookie = ""
-        autoDownload = true
-        autoUpload = true
-    }
+simpleEngine {
+    location = "/home/adrian/ccc"
 }

@@ -17,7 +17,7 @@ dependencies {
     implementation("org.springframework:spring-web:6.2.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
-
+    implementation("org.reactivestreams:reactive-streams:1.0.4")
 }
 
 kotlin {
@@ -27,6 +27,7 @@ kotlin {
 tasks.compileKotlin {
     kotlinOptions {
         javaParameters = true
+        jvmTarget = "17"
     }
 }
 
