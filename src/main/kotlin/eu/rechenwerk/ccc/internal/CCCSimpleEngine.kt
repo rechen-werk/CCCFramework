@@ -1,7 +1,6 @@
 package eu.rechenwerk.ccc.internal
 
 import eu.rechenwerk.ccc.Level
-import eu.rechenwerk.ccc.internal.services.generateLevel
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import java.io.File

@@ -1,4 +1,4 @@
-package eu.rechenwerk.ccc.internal.dtos
+package eu.rechenwerk.ccc.internal
 
 data class LevelInfoDto(
     val nrOfLevels: Int,
@@ -6,4 +6,9 @@ data class LevelInfoDto(
     val selectedLevel: Int,
     val gameFinished: Boolean,
     val lastLevel: Boolean
+)
+
+data class ResourceLocationDto(
+    val url: String,
+    val requestMethod: String
 )

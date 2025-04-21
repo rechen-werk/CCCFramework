@@ -1,9 +1,19 @@
-package eu.rechenwerk.ccc.internal.config
+package eu.rechenwerk.ccc
 
-import eu.rechenwerk.ccc.internal.*
+import eu.rechenwerk.ccc.internal.CCCAdvancedEngine
+import eu.rechenwerk.ccc.internal.CCCSimpleEngine
+import eu.rechenwerk.ccc.internal.CatCoder
 import eu.rechenwerk.ccc.internal.EngineException
 import java.io.File
 import kotlin.system.exitProcess
+
+enum class Download {
+    NONE, ASSIGNMENT, INPUT, INPUT_AND_ASSIGNMENT
+}
+
+enum class Upload {
+    NONE, CODE_AS_FILE, CODE_AS_ZIP, SOLUTION_ONLY, SOLUTION_AND_CODE_AS_ZIP, SOLUTION_AND_CODE_AS_FILE
+}
 
 fun simpleEngine(init: PlainEngineConfig.() -> Unit) {
     PlainEngineConfig.build(init)

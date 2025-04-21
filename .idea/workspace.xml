@@ -4,32 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03d48b8f-471b-4856-8ddc-5afecda87723" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCAdvancedEngine.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCBaseEngine.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCSimpleEngine.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/config/Download.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/config/FrameworkConfigurator.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/config/Upload.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/ExampleInput.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/ExampleOutput.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/ExampleSolution.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/LevelCode.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/LevelInput.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="03d48b8f-471b-4856-8ddc-5afecda87723" name="Changes" comment="Make a commit in between to not lose progress">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CodeGeneratorService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/Contest.kts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/Contest.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/CloudflightCodingContestConfig.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCEngine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCEngine.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/Level1.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/Level1.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCBaseEngine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCBaseEngine.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCEngine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Level.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCSimpleEngine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CCCSimpleEngine.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CatCoder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/CatCoder.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Exceptions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Exceptions.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/CodeGeneratorService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/CodeGeneratorService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/InputService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/InputService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/MethodService.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/PackageService.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/UploadService.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/ZipService.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Util.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/config/Download.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/config/FrameworkConfigurator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/FrameworkConfigurator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/config/Upload.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/dtos/LevelInfoDto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Dtos.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/dtos/ResourceLocationDto.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/ExampleInput.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/ExampleOutput.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/ExampleSolution.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/LevelCode.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/model/LevelInput.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/CodeGeneratorService.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/DownloadService.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/PrintService.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services/ScannerService.kt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,10 +60,16 @@
         <option value="Kotlin Enum" />
         <option value="Kotlin File" />
         <option value="Kotlin Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -104,7 +109,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;engine-v2&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/home/adrian/Projects/CCCFramework&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -121,10 +126,10 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc" />
+      <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/config" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk" />
-      <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal" />
-      <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/services" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
@@ -171,7 +176,8 @@
       <workItem from="1744450658426" duration="4382000" />
       <workItem from="1744530849103" duration="5211000" />
       <workItem from="1744552943006" duration="984000" />
-      <workItem from="1744554295973" duration="1173000" />
+      <workItem from="1744554295973" duration="2776000" />
+      <workItem from="1744567153940" duration="18547000" />
     </task>
     <task id="LOCAL-00001" summary="Change Engine configuration">
       <option name="closed" value="true" />
@@ -181,14 +187,34 @@
       <option name="project" value="LOCAL" />
       <updated>1734682946371</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Make a commit in between to not lose progress">
+      <option name="closed" value="true" />
+      <created>1744555914469</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744555914469</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Change Engine configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="" />
+    <MESSAGE value="Make a commit in between to not lose progress" />
+    <option name="LAST_COMMIT_MESSAGE" value="Make a commit in between to not lose progress" />
   </component>
 </project>

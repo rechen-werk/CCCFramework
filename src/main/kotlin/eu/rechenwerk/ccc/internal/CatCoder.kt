@@ -1,9 +1,7 @@
 package eu.rechenwerk.ccc.internal
 
-import eu.rechenwerk.ccc.internal.config.Download
-import eu.rechenwerk.ccc.internal.config.Upload
-import eu.rechenwerk.ccc.internal.dtos.LevelInfoDto
-import eu.rechenwerk.ccc.internal.dtos.ResourceLocationDto
+import eu.rechenwerk.ccc.Download
+import eu.rechenwerk.ccc.Upload
 import org.springframework.http.*
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.http.client.MultipartBodyBuilder

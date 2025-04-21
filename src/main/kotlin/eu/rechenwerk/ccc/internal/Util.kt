@@ -1,6 +1,5 @@
 package eu.rechenwerk.ccc.internal
 
-import eu.rechenwerk.ccc.internal.services.generateLevel
 import java.lang.reflect.Method
 
 internal fun <T> Collection<T?>.only(exceptionMessage: () -> String): T {

@@ -3,7 +3,10 @@ package eu.rechenwerk
 import eu.rechenwerk.ccc.*
 
 //@Example(0)
-@Level(1) 
+//@Example(1)
+//@Example(2)
+//@Example(3)
+@Level(1)
 fun level1(
     N: Int,
     @Many(sizeParamName = "N", type = String::class) fightingStyles: List<String>
