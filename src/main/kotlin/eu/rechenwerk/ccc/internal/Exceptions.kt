@@ -15,6 +15,4 @@ internal class NoBooleanReturned(level: Int, method: Method): EngineException("E
 
 internal class NoManyAnnotationException(parameter: Parameter): EngineException("Expected parameter ${parameter.name} to have Many Annotation, because it is a List.")
 
-internal class ValidatorException(msg: String): EngineException(msg)
-
-internal class InvalidConfigException(msg: String): Exception(msg)
+internal class ValidatorException(code: Code): EngineException("@Validator ${code.validatorCode?.name} did not have the same parameters as @Level ${code.code.name}.")

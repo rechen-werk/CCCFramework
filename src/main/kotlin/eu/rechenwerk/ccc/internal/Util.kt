@@ -1,12 +1,7 @@
 package eu.rechenwerk.ccc.internal
 
-import eu.rechenwerk.ccc.internal.services.generateLevel
+import java.io.File
 import java.lang.reflect.Method
-
-internal fun <T> Collection<T?>.only(exceptionMessage: () -> String): T {
-    if(this.size != 1) throw SingleException(exceptionMessage.invoke())
-    return this.first()!!
-}
 
 internal fun Collection<Method?>.onlyOrGenerateIfNone(exceptionMessage: () -> Int): Method {
     if(this.size != 1) {
@@ -14,7 +9,7 @@ internal fun Collection<Method?>.onlyOrGenerateIfNone(exceptionMessage: () -> In
         var message = "Expected exactly one method with @Level($level)."
         if(this.isEmpty()) {
             generateLevel(level)
-            message += " A method has been generated for you."
+            message += " A template has been generated for you."
         }
         throw SingleException(message)
     }
@@ -23,3 +18,30 @@ internal fun Collection<Method?>.onlyOrGenerateIfNone(exceptionMessage: () -> In
 
 internal operator fun String.times(other: Int) = this.repeat(other)
 internal operator fun Int.times(other: String) = other.repeat(this)
+
+internal fun generateLevel(level: Int) {
+    val file = File("Level$level.kt")
+    if(file.exists()) return
+
+    file.createNewFile()
+    file.writeText("""
+    package eu.rechenwerk
+    
+    import eu.rechenwerk.ccc.*
+    
+    //@Example(0)
+    @Level($level) 
+    fun level$level(
+        
+    ): String {
+        return ""
+    }
+    
+    //@Validator($level) 
+    fun validator$level(
+        
+    ): Boolean {
+        return true
+    }
+""".trimIndent())
+}
