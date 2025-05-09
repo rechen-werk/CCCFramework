@@ -14,7 +14,9 @@ internal class CCCSimpleEngine(
         this.level = level ?: getHighestLevel()
     }
 
-    override fun run() = run(level)
+    override fun run() {
+        run(level)
+    }
 
     private fun getHighestLevel(): Int {
         val highestLevel = packages

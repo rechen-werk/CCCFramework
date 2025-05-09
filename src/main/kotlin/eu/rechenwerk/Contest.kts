@@ -1,6 +1,9 @@
-import eu.rechenwerk.ccc.simpleEngine
+import eu.rechenwerk.ccc.*
 
-simpleEngine {
-    location = "/home/adrian/ccc"
-    level = 1
+advancedEngine {
+    location = "/path/to/ccc/directory"
+    cookie = "catcoder cookie"
+    competitionUrl = "https://catcoder.codingcontest.org/path/to/contest"
+    upload = Upload.SOLUTION
+    download = Download.INPUT_AND_ASSIGNMENT
 }

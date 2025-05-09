@@ -2,7 +2,6 @@ package eu.rechenwerk.ccc
 
 import eu.rechenwerk.ccc.internal.CCCAdvancedEngine
 import eu.rechenwerk.ccc.internal.CCCSimpleEngine
-import eu.rechenwerk.ccc.internal.CatCoder
 import eu.rechenwerk.ccc.internal.EngineException
 import java.io.File
 import kotlin.system.exitProcess
@@ -12,7 +11,7 @@ enum class Download {
 }
 
 enum class Upload {
-    NONE, CODE_AS_FILE, CODE_AS_ZIP, SOLUTION_ONLY, SOLUTION_AND_CODE_AS_ZIP, SOLUTION_AND_CODE_AS_FILE
+    NONE, SOLUTION, CODE, SOLUTION_AND_CODE
 }
 
 fun simpleEngine(init: PlainEngineConfig.() -> Unit) {
@@ -58,7 +57,7 @@ class CatCoderConfig {
         }
     }
 
-    private fun build() = CCCAdvancedEngine(File(location), CatCoder(competitionUrl, cookie, download, upload))
+    private fun build() = CCCAdvancedEngine(File(location), competitionUrl, cookie, download, upload)
 
     internal companion object {
         fun build(init: CatCoderConfig.() -> Unit) {

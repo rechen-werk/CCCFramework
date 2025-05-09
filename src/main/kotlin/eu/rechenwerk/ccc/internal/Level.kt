@@ -9,66 +9,69 @@ import java.nio.file.Path
 import java.util.*
 import kotlin.reflect.KClass
 
-internal data class LevelCode(
+internal data class Code(
     val examples: List<Int>,
     val code: Method,
     val validatorCode: Method?
-) {
+)
+{
     fun hasValidator() = validatorCode != null
 }
 
-internal data class LevelInput(
+internal data class Input(
     val level: Int,
     val problems: List<Problem>
-) {
-    fun run (levelCode: LevelCode): LevelOutput {
+)
+{
+    fun run (code: Code): Output {
         val line = "+" + 35 * " -"
-        val runAll = levelCode.examples.isEmpty()
+        val runAll = code.examples.isEmpty()
 
         if (runAll) {
-            if(levelCode.hasValidator()) {
+            if(code.hasValidator()) {
                 println(line)
                 println("| Testing your solutions for level $level according to @Validator($level).")
-                val outputs = problems.map { it.run(levelCode) }
+                val outputs = problems.map { it.run(code) }
                 val valid = outputs.all { it.valid ?: throw IllegalStateException("Evaluation has valid set to null, even though validator is correct.") }
 
-                outputs.forEach {
+                outputs.sortedBy { it.example }.forEach {
                     println(line)
-                    println("| level${level}_${it.example}: ${if(it.valid!!) "VALID" else "INVALID."}")
+                    println("| level${level}_${it.example}: ${if(it.valid!!) "VALID" else "INVALID"}")
                     if(!it.valid) {
                         println("| Annotate the level method with @Example(${it.example}) to get more information about your output to the example.")
                     }
                 }
                 println(line)
 
-                return LevelOutput(valid, outputs)
+                return Output(valid, outputs)
             } else {
                 val groupedProblemsBySolution = problems.groupBy { it.hasSolution() }
-                val testOutputs = groupedProblemsBySolution[true]!!.map { it.run(levelCode) }
+                val testOutputs = groupedProblemsBySolution[true]!!.map { it.run(code) }
 
                 val valid = testOutputs.all { it.valid ?: throw IllegalStateException("Evaluation has valid set to null, even though solution is provided.") }
 
                 if (valid) {
-                    val outputs = testOutputs + groupedProblemsBySolution[false]!!.map { it.run(levelCode) }
+                    val outputs = testOutputs + groupedProblemsBySolution[false]!!.map { it.run(code) }
 
                     println(line)
                     println("| The Example for level $level has been solved correctly.")
                     println(line)
 
-                    return LevelOutput(true, outputs)
+                    return Output(true, outputs)
                 } else {
                     println(line)
                     println("| The Example has not been solved correctly. Here are the outputs of both versions:")
+                    println(line)
                     println("| Example: ")
                     println(line)
-                    println("| " + groupedProblemsBySolution[true]!!.first().solutionString())
+                    println("| " + groupedProblemsBySolution[true]!!.first().solutionString()?.replace("\n", "\n| "))
                     println(line)
                     println("| Your solution: ")
                     println(line)
-                    println("| " + testOutputs.first().evaluation)
+                    println("| " + testOutputs.first().result.replace("\n", "\n| "))
                     println(line)
 
-                    return LevelOutput(false, testOutputs)
+                    return Output(false, testOutputs)
                 }
             }
         } else {
@@ -76,11 +79,11 @@ internal data class LevelInput(
             println("| Testing your solution for Level($level).")
             println(line)
             val outputs = problems
-                .filter { levelCode.examples.contains(it.example) }
+                .filter { code.examples.contains(it.example) }
                 .sortedBy { it.example }
                 .map {
                     print("| @Example(${it.example}):")
-                    val output = it.run(levelCode)
+                    val output = it.run(code)
                     println(" ${if(output.valid != null) if (output.valid) "VALID" else "INVALID" else "NO VALIDATOR"}")
                     println(line)
                     output
@@ -90,27 +93,28 @@ internal data class LevelInput(
                 throw EngineException("Invalid value for @Example. None of your @Example-Annotations at level $level matched the available level examples (0 - ${problems.size - 1}).")
             }
 
-            return LevelOutput(false, outputs)
+            return Output(false, outputs)
         }
     }
 }
 
-internal data class LevelOutput(
+internal data class Output(
     val valid: Boolean,
-    val exampleOutputs: List<Evaluation>
+    val results: List<Result>
 )
 
 internal data class Problem(
     val example: Int,
     private val problem: Scanner,
     private val solution: Scanner?
-) {
+)
+{
     private var solutionString: String? = null
     internal fun hasSolution() = solution != null
 
-    internal fun run(levelCode: LevelCode): Evaluation {
-        val method = levelCode.code
-        val validator = levelCode.validatorCode
+    internal fun run(code: Code): Result {
+        val method = code.code
+        val validator = code.validatorCode
         val formalParameters = method.parameters
         val actualParameters = HashMap<String, Any>()
 
@@ -118,13 +122,13 @@ internal data class Problem(
 
         if(validator != null) {
             val validatorFormPars = validator.parameters
-            if(formalParameters.size != validatorFormPars.size) throw ValidatorException(levelCode)
-            formalParameters.forEachIndexed { index, parameter -> if(parameter.type != validatorFormPars[index].type) throw ValidatorException(levelCode) }
+            if(formalParameters.size != validatorFormPars.size) throw ValidatorException(code)
+            formalParameters.forEachIndexed { index, parameter -> if(parameter.type != validatorFormPars[index].type) throw ValidatorException(code) }
         }
         val evaluation = method.invoke(null, *formalParameters.map { actualParameters[it.name] }.toTypedArray()).toString()
         val valid = (validator?.invoke(null, *formalParameters.map { actualParameters[it.name] }.toTypedArray()) as Boolean?) ?: validate(evaluation)
 
-        return Evaluation(example, evaluation, valid)
+        return Result(example, evaluation, valid)
     }
 
     internal fun solutionString(): String? {
@@ -188,12 +192,16 @@ internal data class Problem(
     }
 }
 
-internal data class Evaluation (
+internal data class Result (
     val example: Int,
-    val evaluation: String,
+    val result: String,
     val valid: Boolean?
-) {
+)
+{
     internal fun getPath(level: Int, levelDirectory: Path): Path {
+        return levelDirectory.resolve("level${level}_${example}.out".replace("_0.", "_example."))
+    }
+    internal fun getFile(level: Int, levelDirectory: File): File {
         return levelDirectory.resolve("level${level}_${example}.out".replace("_0.", "_example."))
     }
 }

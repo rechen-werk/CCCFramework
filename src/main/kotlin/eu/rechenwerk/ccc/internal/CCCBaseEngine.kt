@@ -14,8 +14,9 @@ import java.util.zip.ZipFile
 import kotlin.collections.HashSet
 
 internal abstract class CCCBaseEngine(
-    private val location: File
-) {
+    protected val location: File
+)
+{
     protected val packages: List<String>
 
     init {
@@ -24,7 +25,7 @@ internal abstract class CCCBaseEngine(
 
     internal abstract fun run()
 
-    protected fun run(level: Int) {
+    protected fun run(level: Int): Output {
         val levelCode = methods(level)
         val levelInput = input(location, level)
 
@@ -32,14 +33,15 @@ internal abstract class CCCBaseEngine(
         if (levelOutput.valid) {
             val levelOutputDirectory = location.resolve("level$level").toPath()
             Files.createDirectories(levelOutputDirectory)
-            levelOutput.exampleOutputs.forEach {
+            levelOutput.results.forEach {
                 val path = it.getPath(level, levelOutputDirectory)
                 Files.deleteIfExists(path)
-                Files.writeString(path, it.evaluation, StandardOpenOption.CREATE)
+                Files.writeString(path, it.result, StandardOpenOption.CREATE)
             }
             println("| Output for level $level has been written to $levelOutputDirectory.")
             println("+" + 35 * " -")
         }
+        return levelOutput
     }
 
     private fun packages(): List<String> {
@@ -67,7 +69,7 @@ internal abstract class CCCBaseEngine(
         }
     }
 
-    private fun methods(level: Int): LevelCode {
+    private fun methods(level: Int): Code {
         val solution = packages
             .flatMap { pkg -> Reflections(pkg, Scanners.MethodsAnnotated)
                 .getMethodsAnnotatedWith(Level(level)) }
@@ -89,10 +91,10 @@ internal abstract class CCCBaseEngine(
             throw NoBooleanReturned(level, validator)
         }
 
-        return LevelCode(examples, solution, validator)
+        return Code(examples, solution, validator)
     }
 
-    private fun input(location: File, level: Int): LevelInput {
+    private fun input(location: File, level: Int): Input {
         val zipFile = ZipFile(location.listFiles()?.firstOrNull { it.name == "level$level.zip" } ?: throw NoZipException(level))
         val entries = zipFile.entries().asSequence()
 
@@ -108,7 +110,6 @@ internal abstract class CCCBaseEngine(
                 Problem(example, inputScanner, outputScanner)
         }.toList()
 
-        return LevelInput(level, exampleInputs)
+        return Input(level, exampleInputs)
     }
 }
-

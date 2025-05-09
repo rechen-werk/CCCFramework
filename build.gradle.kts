@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "2.0.0"
 }
 
 group = "eu.rechenwerk"
@@ -21,13 +21,13 @@ dependencies {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 tasks.compileKotlin {
-    kotlinOptions {
+    compilerOptions {
+        freeCompilerArgs = listOf("-Xdebug")
         javaParameters = true
-        jvmTarget = "17"
     }
 }
 
