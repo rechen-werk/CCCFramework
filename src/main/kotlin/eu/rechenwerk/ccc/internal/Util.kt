@@ -16,8 +16,8 @@ internal fun Collection<Method?>.onlyOrGenerateIfNone(exceptionMessage: () -> In
     return this.first()!!
 }
 
-internal operator fun String.times(other: Int) = this.repeat(other)
-internal operator fun Int.times(other: String) = other.repeat(this)
+operator fun String.times(other: Int) = this.repeat(other)
+operator fun Int.times(other: String) = other.repeat(this)
 
 internal fun generateLevel(level: Int) {
     val file = File("Level$level.kt")
