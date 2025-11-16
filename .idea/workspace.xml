@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03d48b8f-471b-4856-8ddc-5afecda87723" name="Changes" comment="Finish advanced engine">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Level1.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="03d48b8f-471b-4856-8ddc-5afecda87723" name="Changes" comment="start">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Level4.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/Contest.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Util.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal/Util.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Level1.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Level1.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Main.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,15 +92,15 @@
     "Kotlin script.Contest.kts.executor": "Run",
     "Kotlin.CCCEngine.executor": "Run",
     "Kotlin.MainKt (1).executor": "Run",
-    "Kotlin.MainKt.executor": "Debug",
+    "Kotlin.MainKt.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "ccc-november-2025",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/adrian/IdeaProjects/CCCFramework",
+    "last_opened_file_path": "/home/adrian/IdeaProjects/CCCFramework/src/main/kotlin/eu/rechenwerk/ccc",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -116,6 +114,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/internal" />
@@ -217,7 +218,15 @@
       <option name="project" value="LOCAL" />
       <updated>1745252810458</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="start">
+      <option name="closed" value="true" />
+      <created>1763126914864</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1763126914864</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -254,26 +263,17 @@
     <MESSAGE value="Make a commit in between to not lose progress" />
     <MESSAGE value="Refactor Engine to add catcoder and future variaitons more easily" />
     <MESSAGE value="Finish advanced engine" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish advanced engine" />
+    <MESSAGE value="start" />
+    <option name="LAST_COMMIT_MESSAGE" value="start" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <condition expression="l == 'u'" language="kotlin" />
-          <url>file://$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Level1.kt</url>
-          <line>15</line>
-          <option name="timeStamp" value="26" />
+          <url>file://$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Level3.kt</url>
+          <line>68</line>
+          <option name="timeStamp" value="42" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/eu/rechenwerk/ccc/Level5.kt</url>
-          <line>166</line>
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="java.lang.NullPointerException" package="java.lang" />
-          <option name="timeStamp" value="25" />
-        </breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
